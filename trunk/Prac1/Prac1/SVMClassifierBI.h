@@ -12,13 +12,14 @@ using namespace cv;
 
 class SVMClassifierBI:public ClassifierBI{
 public:
-	SVMClassifierBI(SVMParamsBI* oSVMParamsBIP, Mat mCompleteData);
+	SVMClassifierBI(SVMParamsBI* oSVMParamsBIP);
 	~SVMClassifierBI();
 
 
 
 	void trainBI();
 	void testBI();
+	string toString();
 
 
 

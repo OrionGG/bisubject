@@ -1,8 +1,7 @@
 #include "ClassifierBI.h"
 
-ClassifierBI::ClassifierBI(IClassParams* oClassParamsP, Mat mCompleteDataP){
+ClassifierBI::ClassifierBI(IClassParams* oClassParamsP){
 	oClassParams = oClassParamsP;
-	mCompleteData = mCompleteDataP;
 }
 
 ClassifierBI::~ClassifierBI(){
@@ -10,6 +9,9 @@ ClassifierBI::~ClassifierBI(){
 
 
 void ClassifierBI::eval(int iPercCrossFold){
+
+	std::cout << this->toString() << endl;
+
 	int iDataSize = mCompleteData.rows;
 
 	int iItemsInSet = iDataSize * iPercCrossFold / 100;
@@ -19,6 +21,9 @@ void ClassifierBI::eval(int iPercCrossFold){
 		trainBI();
 		testBI();
 	}
+
+	std::cout << "Well classifed: " <<oClassResults.TruePositive() << endl;
+	std::cout << "Wrong classifed: " <<oClassResults.FalsePositive() << endl;
 
 }
 
@@ -67,3 +72,8 @@ void ClassifierBI::SplitTrainLabels(Mat mOriginalData, Mat &mTrainData, Mat &mLa
 	mLabelsData = mOriginalData(Range::all(), oRangeColsCompleteDataLabels);
 
 }
+
+
+cv::Mat ClassifierBI::CompleteData() const { return mCompleteData; }
+void ClassifierBI::CompleteData(cv::Mat val) { mCompleteData = val; setParams();}
+

@@ -1,9 +1,8 @@
 #include "SVMClassifierBI.h"
 
-SVMClassifierBI::SVMClassifierBI(SVMParamsBI* oSVMParamsBIP, Mat mCompleteData)
-	:ClassifierBI(dynamic_cast<IClassParams*>(oSVMParamsBIP), mCompleteData)
+SVMClassifierBI::SVMClassifierBI(SVMParamsBI* oSVMParamsBIP)
+	:ClassifierBI(dynamic_cast<IClassParams*>(oSVMParamsBIP))
 {
-	setParams();
 	oSVM = SVM();
 	oClassResults.TruePositive(0);
 	oClassResults.FalsePositive(0);
@@ -70,6 +69,11 @@ void SVMClassifierBI::testBI(){
 SVM SVMClassifierBI::SVMObject() const { return oSVM; }
 
 void SVMClassifierBI::SVMObject(SVM val) { oSVM = val; }
+
+string  SVMClassifierBI::toString(){
+	string sResult =  "SVM Classifier";
+	return sResult;
+}
 
 
 

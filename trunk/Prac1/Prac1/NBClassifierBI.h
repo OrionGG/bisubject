@@ -11,12 +11,15 @@ using namespace cv;
 
 class NBClassifierBI: public ClassifierBI{
 public:
-	NBClassifierBI(NBParamsBI* oNBParamsBIP, Mat mCompleteData);
+	NBClassifierBI(NBParamsBI* oNBParamsBIP);
 	~NBClassifierBI();
 
 
 	void trainBI();
 	void testBI();
+	string toString();
+
+
 
 private:
 	NormalBayesClassifier oNormalBayesClassifier;

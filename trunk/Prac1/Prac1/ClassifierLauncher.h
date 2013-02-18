@@ -11,15 +11,13 @@ public:
 	ClassifierLauncher();
 	~ClassifierLauncher();
 
-	bool setTrainingData();
+	bool setCompleteData(Mat mData);
 	//bool setTestData();
 
 	bool addClassifier(ClassifierBI* oClassifierBI);
 	bool startClassification();
 
 private:
-	Mat mTrainingData;
-	//Mat mTestData;
 	vector<ClassifierBI*> vClassifierBI;
 
 };
