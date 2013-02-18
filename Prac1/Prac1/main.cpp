@@ -41,14 +41,15 @@ void deleteLine( vector<float> &mResult )
 	mResult.pop_back();
 }
 
-vector<float>  readFileText  (char* inputFile, 	vector<float> vPointsToClassify, int &rows, int & cols) {
+vector<float>  readFileText  (char* inputFile, 	vector<float> vPointsToClassify, int& rows, int& cols) {
+
+	rows = 0;
 	vector<float> mResult;
 	string line;
 	ifstream myfile (inputFile);
 
 	if (myfile.is_open())
 	{
-		rows = 0;
 		while ( myfile.good() )
 		{
 			getline (myfile,line);
@@ -76,8 +77,34 @@ vector<float>  readFileText  (char* inputFile, 	vector<float> vPointsToClassify,
 		}
 		myfile.close();
 	}
+	else{
+
+	}
 
 	return mResult;
+}
+
+void createClassifiers( int rows, int cols, vector<float> vData ) 
+{
+	Mat myMat(rows, cols, CV_32FC1, &vData[0]);
+
+	ClassifierLauncher oClassifierLauncher = ClassifierLauncher();
+
+	SVMParamsBI oSVMParam = SVMParamsBI();
+	SVMParams params = SVMParams();
+	oSVMParam.SVMParamsField(params);
+
+	SVMClassifierBI* oSVMClassifierBI = new SVMClassifierBI(&oSVMParam);
+
+	oClassifierLauncher.addClassifier(oSVMClassifierBI);
+
+	NBParamsBI oNBParamsBI = NBParamsBI();
+	NBClassifierBI* oNBClassifierBI = new NBClassifierBI(&oNBParamsBI);
+
+	oClassifierLauncher.addClassifier(oNBClassifierBI);
+	oClassifierLauncher.setCompleteData(myMat);
+	//oClassifierLauncher.setTrainingData(vData);
+	oClassifierLauncher.startClassification();
 }
 
 
@@ -94,26 +121,15 @@ int main(int argc, char *argv[])
 
 	vector<float> vPointsToClassify (aPointsToClassify, aPointsToClassify + sizeof(aPointsToClassify) / sizeof(aPointsToClassify[0]) );
 
-	vector<float> vData = readFileText("resources\\prac1_fichPuntosFaciales.txt", vPointsToClassify, rows, cols);
-	Mat myMat(rows, cols, CV_32FC1, &vData[0]);
+	char* inputFile = ".\\resources\\prac1_fichPuntosFaciales.txt";
+	vector<float> vData = readFileText(inputFile, vPointsToClassify, rows, cols);
+	if(vData.size() == 0){
+		cout << ERROROPENFILE << inputFile << endl;
+	}
+	else{
+		createClassifiers(rows, cols, vData);
 
-	ClassifierLauncher oClassifierLauncher = ClassifierLauncher();
-	
-	SVMParamsBI oSVMParam = SVMParamsBI();
-	SVMParams params = SVMParams();
-	oSVMParam.SVMParamsField(params);
-
-	SVMClassifierBI* oSVMClassifierBI = new SVMClassifierBI(&oSVMParam);
-
-	oClassifierLauncher.addClassifier(oSVMClassifierBI);
-	
-	NBParamsBI oNBParamsBI = NBParamsBI();
-	NBClassifierBI* oNBClassifierBI = new NBClassifierBI(&oNBParamsBI);
-
-	oClassifierLauncher.addClassifier(oNBClassifierBI);
-	oClassifierLauncher.setCompleteData(myMat);
-	//oClassifierLauncher.setTrainingData(vData);
-	oClassifierLauncher.startClassification();
+	}
 
 	Sleep(10000);
 
