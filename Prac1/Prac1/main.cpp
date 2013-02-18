@@ -85,32 +85,36 @@ vector<float>  readFileText  (char* inputFile, 	vector<float> vPointsToClassify,
 int main(int argc, char *argv[])
 {
 	int rows, cols = 0;
+
 	static const float aPointsToClassify[] = {0, 2, 8};
+	cout << "Selected labels: " << endl;
+	int n = sizeof(aPointsToClassify)/sizeof(aPointsToClassify[0]);
+	for(int i = 0; i < n;i++) cout << aPointsToClassify[i] << endl;
+	cout << endl;
+
 	vector<float> vPointsToClassify (aPointsToClassify, aPointsToClassify + sizeof(aPointsToClassify) / sizeof(aPointsToClassify[0]) );
 
 	vector<float> vData = readFileText("resources\\prac1_fichPuntosFaciales.txt", vPointsToClassify, rows, cols);
 	Mat myMat(rows, cols, CV_32FC1, &vData[0]);
-	cout << "M = "<< endl << " "  << myMat << endl << endl;
 
 	ClassifierLauncher oClassifierLauncher = ClassifierLauncher();
 	
 	SVMParamsBI oSVMParam = SVMParamsBI();
 	SVMParams params = SVMParams();
-
-
-
 	oSVMParam.SVMParamsField(params);
 
-	SVMClassifierBI* oSVMClassifierBI = new SVMClassifierBI(&oSVMParam, myMat);
+	SVMClassifierBI* oSVMClassifierBI = new SVMClassifierBI(&oSVMParam);
 
 	oClassifierLauncher.addClassifier(oSVMClassifierBI);
 	
 	NBParamsBI oNBParamsBI = NBParamsBI();
-	NBClassifierBI* oNBClassifierBI = new NBClassifierBI(&oNBParamsBI, myMat);
+	NBClassifierBI* oNBClassifierBI = new NBClassifierBI(&oNBParamsBI);
 
 	oClassifierLauncher.addClassifier(oNBClassifierBI);
+	oClassifierLauncher.setCompleteData(myMat);
 	//oClassifierLauncher.setTrainingData(vData);
 	oClassifierLauncher.startClassification();
 
+	Sleep(10000);
 
 }

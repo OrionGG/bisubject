@@ -8,9 +8,12 @@ ClassifierLauncher::~ClassifierLauncher(){
 
 }
 
-bool ClassifierLauncher::setTrainingData()
+bool ClassifierLauncher::setCompleteData(Mat mData)
 {
-
+	for (int i= 0; i< vClassifierBI.size();i++)
+	{
+		vClassifierBI[i]->CompleteData(mData);
+	}
 	return true;
 }
 //bool setTestData();

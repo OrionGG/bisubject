@@ -1,7 +1,7 @@
 #include "NBClassifierBI.h"
 
-NBClassifierBI::NBClassifierBI(NBParamsBI* oNBParamsBIP, Mat mCompleteData):
-ClassifierBI(dynamic_cast<IClassParams*>(oNBParamsBIP), mCompleteData){
+NBClassifierBI::NBClassifierBI(NBParamsBI* oNBParamsBIP):
+ClassifierBI(dynamic_cast<IClassParams*>(oNBParamsBIP)){
 
 	setParams();
 	oClassResults.TruePositive(0);
@@ -44,4 +44,9 @@ void NBClassifierBI::testBI(){
 
 void NBClassifierBI::setParams(){
 
+}
+
+string  NBClassifierBI::toString(){
+	string sResult =  "NB Classifier";
+	return sResult;
 }
