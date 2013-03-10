@@ -51,7 +51,7 @@ Mat asRowMatrix(const vector<Mat>& src, int rtype, double alpha = 1, double beta
 }
 
 
-int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCompleteData, int &iMinDataPerLabel)
+int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCompleteData, int &iMinDataPerLabel, int &iInputNumber)
 {   
 	int fileCount=0;
 
@@ -89,6 +89,7 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 					iMinDataPerLabel =iDataPerLabel;
 				}
 				Mat data = asRowMatrix(vImages, CV_32FC1);
+				iInputNumber = data.cols;
 				hCompleteData.insert(pair<int,Mat>(iLabel, data));
 				stringstream  sImageData;
 				sImageData << ".//DataImages//" << iLabel << "data.png";
@@ -102,6 +103,31 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 	return fileCount;
 }
 
+void LoadImagesData( string sImagesDataDirectory, string filterFileType, int &iInputNumber, int &iMinDataPerLabel, map<int, Mat> &hCompleteData ) 
+{
+	directory_iterator end ;
+	int iLabel = 0;
+	for( directory_iterator iter(sImagesDataDirectory) ; iter != end ; ++iter ){
+		if ( (is_regular_file( *iter ) && iter->path().extension().string() == filterFileType))
+		{     
+
+			string sImageFile = iter->path().string();
+			Mat data = imread(sImageFile, CV_BGR2GRAY);
+			data.convertTo(data, CV_32FC1);
+			iInputNumber = data.cols;
+			int iDataPerLabel = data.rows;
+			if (iDataPerLabel < iMinDataPerLabel)
+			{
+				iMinDataPerLabel =iDataPerLabel;
+
+			}
+			hCompleteData.insert(pair<int,Mat>(iLabel, data));
+			cout << iter->path().filename().string() << endl ; //this is the one of scanned file names
+			iLabel++;
+		}
+	}
+}
+
 
 int main(int argc, char* argv[])
 { // lets just check the version first
@@ -111,42 +137,28 @@ int main(int argc, char* argv[])
 
 
 	int iMinDataPerLabel = numeric_limits<int>::max();
+	int iInputNumber;
 	if(!exists( sImagesDataDirectory ) || boost::filesystem::is_empty(sImagesDataDirectory)){
 			string filterFileType = ".pgm";
-		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, hCompleteData, iMinDataPerLabel);
+		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, 
+			hCompleteData, iMinDataPerLabel, iInputNumber);
 	}
 	else{	
 		string filterFileType = ".png";
 
-		directory_iterator end ;
-		int iLabel = 0;
-		for( directory_iterator iter(sImagesDataDirectory) ; iter != end ; ++iter ){
-			if ( (is_regular_file( *iter ) && iter->path().extension().string() == filterFileType))
-			{     
+		LoadImagesData(sImagesDataDirectory, filterFileType, iInputNumber, iMinDataPerLabel, hCompleteData);
 
-				string sImageFile = iter->path().string();
-				Mat data = imread(sImageFile);
-
-				int iDataPerLabel = data.rows;
-				if (iDataPerLabel < iMinDataPerLabel)
-				{
-					iMinDataPerLabel =iDataPerLabel;
-
-				}
-
-				hCompleteData.insert(pair<int,Mat>(iLabel, data));
-				cout << iter->path().filename().string() << endl ; //this is the one of scanned file names
-				iLabel++;
-			}
-		}
 	}
 
 
 	MLPParamsBI oMLPParamsBI = MLPParamsBI();
-	ClassifierBI* oClassifierBI = new MLPClassifierBI(&oMLPParamsBI);
+	ClassifierBI* oClassifierBI = new MLPClassifierBI(&oMLPParamsBI, iInputNumber, 1);
 
 	oClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
 	oClassifierBI->eval();
+
+	float accurancy = oClassifierBI->getClassResults().Accurancy();
+	float efficiency = oClassifierBI->getClassResults().Efficiency();
 	
 	delete oClassifierBI;
 

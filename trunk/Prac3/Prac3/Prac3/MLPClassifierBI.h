@@ -1,6 +1,7 @@
 #pragma once
 #ifndef MLPCLASSIFIERBI_H
 #define MLPCLASSIFIERBI_H
+#include <ctime>
 #include "opencv2/ml/ml.hpp"
 
 #include "ClassifierBI.h"
@@ -12,7 +13,7 @@ using namespace cv;
 
 class MLPClassifierBI:public ClassifierBI{
 public:
-	MLPClassifierBI(MLPParamsBI* oMLPParamsBIP);
+	MLPClassifierBI(MLPParamsBI* oMLPParamsBIP, int iInputNumberP, int iOutputNumberP);
 	~MLPClassifierBI();
 
 
@@ -29,6 +30,8 @@ public:
 private:
 	void setParams();
 	CvANN_MLP oMLP;
+	int iInputNumber;
+	int iOutputNumber;
 
 };
 #endif
