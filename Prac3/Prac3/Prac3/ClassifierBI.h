@@ -28,11 +28,17 @@ public:
 
 	void eval();
 
+	void CrossEval( int i, int iItemsInSet ) ;
+	
+
 	void SplitTrainLabels(Mat mOriginalData, Mat &mTrainData, Mat &mLabelsData,  int iSplitIndex) ;
 
 
 	map<int, Mat> CompleteData() const;
 	void CompleteData(map<int, Mat> val, int iMinDataPerLabel);
+
+	ClassResults getClassResults() const;
+	void getClassResults(ClassResults val);
 
 	//cv::Mat CompleteData() const;
 	//void CompleteData(cv::Mat val);
@@ -51,5 +57,6 @@ protected:
 	Mat mTestDataLabels;
 	map<int, Mat> hCompleteData;
 	int iMinDataPerLabel;
+
 };
 #endif

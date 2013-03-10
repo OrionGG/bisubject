@@ -1,7 +1,6 @@
 #pragma once
 #ifndef CLASSRESULTS_H
 #define CLASSRESULTS_H
-#include <ctime>
 #include <iostream>
 
 class ClassResults{

@@ -10,6 +10,26 @@ ClassifierBI::~ClassifierBI(){
 }
 
 
+ClassResults ClassifierBI::getClassResults() const { return oClassResults; }
+void ClassifierBI::getClassResults(ClassResults val) { oClassResults = val; }
+
+void ClassifierBI::CrossEval( int i, int iItemsInSet ) 
+{
+	mTrainingData = Mat(0,0,CV_32FC1);
+	mTrainingDataLabels = Mat(0,0,CV_32FC1);
+	mTestData =  Mat(0,0,CV_32FC1);
+	mTestDataLabels =  Mat(0,0,CV_32FC1);
+	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
+		Mat vDataOneType = it->second;
+
+		createDataToEval(i,iItemsInSet, vDataOneType, it->first);
+	}
+
+	trainBI();
+	testBI();
+	std::cout << "Well classifed: " <<oClassResults.TruePositive() << endl;
+	std::cout << "Wrong classifed: " <<oClassResults.FalsePositive() << endl;
+}
 
 void ClassifierBI::eval(){
 
@@ -17,20 +37,9 @@ void ClassifierBI::eval(){
 	int iItemsInSet = iMinDataPerLabel * iPercCrossFold / 100;
 	for (int i = 0;i <(iMinDataPerLabel-iItemsInSet); i = i++)
 	{
+		 
+		CrossEval(i, iItemsInSet);
 
-		mTrainingData = Mat();
-		mTrainingDataLabels = Mat();
-		mTestData = Mat();
-		mTestDataLabels = Mat();
-		for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
-			Mat vDataOneType = it->second;
-			
-			createDataToEval(i,iItemsInSet, vDataOneType, it->first);
-		}
-
-
-			trainBI();
-			testBI();
 	}
 
 		std::cout << "Well classifed: " <<oClassResults.TruePositive() << endl;
@@ -41,45 +50,6 @@ void ClassifierBI::eval(){
 
 }
 
-//
-//void ClassifierBI::createDataToEval(int iStartIndex, int iItemsInSet){
-//	mTestData = Mat(iItemsInSet, mCompleteData.cols, mCompleteData.type() );
-//
-//
-//	for(int i = iStartIndex; i < iStartIndex + iItemsInSet; i++){
-//		for (int j = 0; j<mCompleteData.cols; j ++)
-//		{
-//			mTestData.at<float>(i - iStartIndex, j) = mCompleteData.at<float>(i, j);
-//		}
-//	}
-//
-//
-//	vector<float>* vTrainingDataPoints = new vector<float>();
-//
-//	for(int i = 0; i < iStartIndex; i++){
-//		for (int j = 0; j<mCompleteData.cols; j ++)
-//		{
-//			vTrainingDataPoints->push_back(mCompleteData.at<float>(i, j));
-//		}
-//	}
-//
-//	for(int i = iStartIndex + iItemsInSet; i < mCompleteData.rows; i++){
-//		for (int j = 0; j<mCompleteData.cols; j ++)
-//		{
-//			float fValue = mCompleteData.at<float>(i, j);
-//			vTrainingDataPoints->push_back(mCompleteData.at<float>(i, j));
-//		}
-//	}
-//
-//
-//
-//	mTrainingData = Mat(mCompleteData.rows - iItemsInSet, mCompleteData.cols, mCompleteData.type(), &((*vTrainingDataPoints)[0]));
-//
-//}
-
-
-
-
 
 
 void ClassifierBI::createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOneType, int iLabel){
@@ -88,20 +58,20 @@ void ClassifierBI::createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOn
 	for(int i = iStartIndex; i < iStartIndex + iItemsInSet; i++){
 		//mTestData.row(i - iStartIndex) = vDataOneType.row(i);
 		mTestData.push_back(vDataOneType.row(i));
-		mTestDataLabels.push_back(iLabel);
+		mTestDataLabels.push_back((float) iLabel);
 	}
 
 
 
 	for(int i = 0; i < iStartIndex; i++){
 		mTrainingData.push_back(vDataOneType.row(i));
-		mTrainingDataLabels.push_back(iLabel);
+		mTrainingDataLabels.push_back((float) iLabel);
 	}
 
 
 	for(int i = iStartIndex + iItemsInSet; i < vDataOneType.rows; i++){
 		mTrainingData.push_back(vDataOneType.row(i));
-		mTrainingDataLabels.push_back(iLabel);
+		mTrainingDataLabels.push_back((float) iLabel);
 	}	
 }
 
