@@ -16,9 +16,13 @@ public:
 
 	double Accurancy() const { return 1 - (iFalsePositive/(iTruePositive+iFalsePositive)); }
 
+	float AccumErr() const { return fAccumErr; }
+	void AccumErr(float val) { fAccumErr = val; }
+
 protected:
 	int iTruePositive;
 	int iFalsePositive;
+	float fAccumErr;
 };
 
 #endif

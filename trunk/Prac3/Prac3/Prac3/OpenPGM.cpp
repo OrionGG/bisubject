@@ -31,23 +31,53 @@ Mat asRowMatrix(const vector<Mat>& src, int rtype, double alpha = 1, double beta
 	size_t d = src[0].total();
 	// Create resulting data matrix:
 	Mat data(n, d, rtype);
+	// Now copy data:
+	for(int i = 0; i < n; i++) {
+		//
+		if(src[i].empty()) {
+			string error_message = format("Image number %d was empty, please check your input data.", i);
+			CV_Error(CV_StsBadArg, error_message);
+		}
 
-	for (int file_num = 0; file_num < n; file_num++)
-	{
-		Mat img_mat = src.at(file_num);
+		// Get a hold of the current row:
+		Mat xi = data.row(i);
+		// Make reshape happy by cloning for non-continuous matrices:
+
+
+		Mat img_mat = src[i];	
 		if(img_mat.total() != d){
 			resize(img_mat, img_mat, src[0].size() );
 		}
-		int ii = 0; // Current column in training_mat
-		for (int i = 0; i<img_mat.rows; i++) {
-			for (int j = 0; j < img_mat.cols; j++) {
-				data.at<float>(file_num,ii++) = img_mat.at<uchar>(i,j);
-			}
-		}
-	}
 
+		if(img_mat.isContinuous()) {
+			img_mat.reshape(1, 1).convertTo(xi, rtype, alpha, beta);
+		} else {
+			img_mat.clone().reshape(1, 1).convertTo(xi, rtype, alpha, beta);
+		}
+
+
+		data.push_back(xi);
+	}
 	return data;
 
+}
+
+// Normalizes a given image into a value range between 0 and 255.
+Mat norm_0_255(const Mat& src) {
+	// Create and return normalized image:
+	Mat dst;
+	switch(src.channels()) {
+	case 1:
+		cv::normalize(src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+		break;
+	case 3:
+		cv::normalize(src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+		break;
+	default:
+		src.copyTo(dst);
+		break;
+	}
+	return dst;
 }
 
 
@@ -75,8 +105,8 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 
 						string sImageFile = iter->path().string();
 
-						Mat mImage = imread(sImageFile );
-
+						Mat mImage = imread(sImageFile, CV_BGR2GRAY );
+						mImage.convertTo(mImage, CV_32FC1);
 						vImages.push_back(mImage);
 
 						fileCount++;
@@ -88,7 +118,7 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 				{
 					iMinDataPerLabel =iDataPerLabel;
 				}
-				Mat data = asRowMatrix(vImages, CV_32FC1);
+				Mat data = asRowMatrix(vImages, vImages[0].type());
 				iInputNumber = data.cols;
 				hCompleteData.insert(pair<int,Mat>(iLabel, data));
 				stringstream  sImageData;
@@ -124,6 +154,28 @@ void LoadImagesData( string sImagesDataDirectory, string filterFileType, int &iI
 			hCompleteData.insert(pair<int,Mat>(iLabel, data));
 			cout << iter->path().filename().string() << endl ; //this is the one of scanned file names
 			iLabel++;
+
+			//Mat mImage = data.row(1);
+			//imshow("mImage",norm_0_255(mImage.reshape(0,192)));
+			//// Number of components to keep for the PCA:
+			//int num_components = 10;
+			//PCA oPCA(data, Mat(), CV_PCA_DATA_AS_ROW, num_components);
+
+			//// And copy the PCA results:
+			//Mat mean = oPCA.mean.clone();
+			//Mat eigenvalues = oPCA.eigenvalues.clone();
+			//Mat eigenvectors = oPCA.eigenvectors.clone();
+			//
+			//// The mean face:
+			//imshow("avg", norm_0_255(mean.reshape(1, 192)));
+
+			//// The first three eigenfaces:
+			//imshow("pc1", norm_0_255(oPCA.eigenvectors.row(0)).reshape(1, 192));
+			//imshow("pc2", norm_0_255(oPCA.eigenvectors.row(1)).reshape(1, 192));
+			//imshow("pc3", norm_0_255(oPCA.eigenvectors.row(2)).reshape(1, 192));
+
+			//// Show the images:
+			//waitKey(0);
 		}
 	}
 }
@@ -159,6 +211,7 @@ int main(int argc, char* argv[])
 
 	float accurancy = oClassifierBI->getClassResults().Accurancy();
 	float efficiency = oClassifierBI->getClassResults().Efficiency();
+
 	
 	delete oClassifierBI;
 
