@@ -27,12 +27,12 @@ void MLPClassifierBI::setParams(){
 
 	CvANN_MLP_TrainParams params;
 	CvTermCriteria criteria;
-	criteria.max_iter = 100;
+	criteria.max_iter = 300;
 	criteria.epsilon = 0.00001f;	
 	criteria.type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS;
 	params.train_method = CvANN_MLP_TrainParams :: BACKPROP;
-	params.bp_dw_scale = 0.01f;
-	params.bp_moment_scale = 0.01f;
+	params.bp_dw_scale = 0.1f;
+	params.bp_moment_scale = 0.1f;
 	params.term_crit = criteria;
 
 	MLPParamsBI* oMLPParamsBI = static_cast<MLPParamsBI*>(oClassParams);
@@ -79,7 +79,7 @@ void MLPClassifierBI::testBI(){
 		Mat sample = mTestData.row(i);
 		oMLP.predict ( sample, response );
 
-		float fResponse = response.at <float >(0,0)*38;
+		float fResponse = response.at <float >(0,0);
 
 		float fLabel = mTestDataLabels.at<float>(i, 0);
 
@@ -90,6 +90,7 @@ void MLPClassifierBI::testBI(){
 
 			oClassResults.FalsePositive(oClassResults.FalsePositive()+1);
 		}
+		oClassResults.AccumErr(oClassResults.AccumErr() + abs(fLabel - fResponse));
 	}
 
 }

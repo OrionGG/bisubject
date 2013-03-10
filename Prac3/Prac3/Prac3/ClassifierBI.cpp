@@ -35,7 +35,7 @@ void ClassifierBI::eval(){
 
 
 	int iItemsInSet = iMinDataPerLabel * iPercCrossFold / 100;
-	for (int i = 0;i <(iMinDataPerLabel-iItemsInSet); i = i++)
+	for (int i = 0;i < iMinDataPerLabel; i = i+iItemsInSet)
 	{
 		 
 		CrossEval(i, iItemsInSet);
