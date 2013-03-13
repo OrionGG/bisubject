@@ -22,7 +22,7 @@ void ClassifierBI::CrossEval( int i, int iItemsInSet )
 	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
 		Mat vDataOneType = it->second;
 
-		createDataToEval(i,iItemsInSet, vDataOneType, it->first);
+		createDataToEval(i,iItemsInSet, vDataOneType, it->first, hCompleteData.size());
 	}
 
 	trainBI();
@@ -35,7 +35,7 @@ void ClassifierBI::eval(){
 
 
 	int iItemsInSet = iMinDataPerLabel * iPercCrossFold / 100;
-	for (int i = 0;i < iMinDataPerLabel; i = i+iItemsInSet)
+	for (int i = 0;i < 1/*iMinDataPerLabel*/; i = i+iItemsInSet)
 	{
 		 
 		CrossEval(i, iItemsInSet);
@@ -52,26 +52,38 @@ void ClassifierBI::eval(){
 
 
 
-void ClassifierBI::createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOneType, int iLabel){
+void ClassifierBI::createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOneType, int iLabel, int iLabelsNumber){
 
 
 	for(int i = iStartIndex; i < iStartIndex + iItemsInSet; i++){
 		//mTestData.row(i - iStartIndex) = vDataOneType.row(i);
+		//Mat mTestDataRow;
+		//vDataOneType.row(i).convertTo(mTestDataRow, CV_32FC1);
 		mTestData.push_back(vDataOneType.row(i));
-		mTestDataLabels.push_back((float) iLabel);
+		Mat mLabel(1,iLabelsNumber, CV_32FC1,Scalar::all(0.0));
+		mLabel.at<float>(0,iLabel) = 1.0;
+		mTestDataLabels.push_back(mLabel);
 	}
 
 
 
-	for(int i = 0; i < iStartIndex; i++){
+	for(int i = 0; i < iStartIndex; i++){		
+		//Mat mTestDataRow;
+		//vDataOneType.row(i).convertTo(mTestDataRow, CV_32FC1);
 		mTrainingData.push_back(vDataOneType.row(i));
-		mTrainingDataLabels.push_back((float) iLabel);
+		Mat mLabel(1,iLabelsNumber, CV_32FC1,Scalar::all(0.0));
+		mLabel.at<float>(0,iLabel) = 1.0;
+		mTrainingDataLabels.push_back(mLabel);
 	}
 
 
 	for(int i = iStartIndex + iItemsInSet; i < vDataOneType.rows; i++){
+		//Mat mTestDataRow;
+		//vDataOneType.row(i).convertTo(mTestDataRow, CV_32FC1);
 		mTrainingData.push_back(vDataOneType.row(i));
-		mTrainingDataLabels.push_back((float) iLabel);
+		Mat mLabel(1,iLabelsNumber, CV_32FC1,Scalar::all(0.0));
+		mLabel.at<float>(0,iLabel) = 1.0;
+		mTrainingDataLabels.push_back(mLabel);
 	}	
 }
 

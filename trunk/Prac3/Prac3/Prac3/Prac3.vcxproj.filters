@@ -39,6 +39,9 @@
     <ClCompile Include="MLPParamsBI.cpp">
       <Filter>Source Files\Params</Filter>
     </ClCompile>
+    <ClCompile Include="mlp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassifierBI.h">

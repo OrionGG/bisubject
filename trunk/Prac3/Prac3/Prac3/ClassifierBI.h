@@ -45,7 +45,7 @@ public:
 
 private:
 	//void createDataToEval(int iStartIndex, int iItemsInSet);
-	void createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOneType, int iLabel);
+	void createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOneType, int iLabel, int iLabelsNumber);
 
 protected:
 	IClassParams* oClassParams;
