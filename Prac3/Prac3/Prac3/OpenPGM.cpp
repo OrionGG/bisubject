@@ -56,7 +56,7 @@ Mat asRowMatrix(const vector<Mat>& src, int rtype, double alpha = 1, double beta
 		}
 
 
-		data.push_back(xi);
+		data.row(i) = xi ;
 	}
 	return data;
 
@@ -105,8 +105,9 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 
 						string sImageFile = iter->path().string();
 
-						Mat mImage = imread(sImageFile, CV_BGR2GRAY );
-						mImage.convertTo(mImage, CV_32FC1);
+						Mat mImage = imread(sImageFile, CV_8UC1);	
+						/*cvtColor(mImage, mImage, CV_RGB2GRAY);*/
+						//mImage.resize(100);
 						vImages.push_back(mImage);
 
 						fileCount++;
@@ -143,7 +144,7 @@ void LoadImagesData( string sImagesDataDirectory, string filterFileType, int &iI
 
 			string sImageFile = iter->path().string();
 			Mat data = imread(sImageFile, CV_BGR2GRAY);
-			data.convertTo(data, CV_32FC1);
+			//data.convertTo(data, CV_32FC1);
 			iInputNumber = data.cols;
 			int iDataPerLabel = data.rows;
 			if (iDataPerLabel < iMinDataPerLabel)
@@ -181,7 +182,7 @@ void LoadImagesData( string sImagesDataDirectory, string filterFileType, int &iI
 }
 
 
-int main(int argc, char* argv[])
+int _main(int argc, char* argv[])
 { // lets just check the version first
 	map<int, Mat> hCompleteData;
 
@@ -191,8 +192,11 @@ int main(int argc, char* argv[])
 	int iMinDataPerLabel = numeric_limits<int>::max();
 	int iInputNumber;
 	if(!exists( sImagesDataDirectory ) || boost::filesystem::is_empty(sImagesDataDirectory)){
-			string filterFileType = ".pgm";
-		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, 
+		//string filterFileType = ".pgm";
+		string filterFileType = ".png";
+		//int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, 
+		//	hCompleteData, iMinDataPerLabel, iInputNumber);
+		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Colors", filterFileType, 
 			hCompleteData, iMinDataPerLabel, iInputNumber);
 	}
 	else{	
@@ -204,13 +208,13 @@ int main(int argc, char* argv[])
 
 
 	MLPParamsBI oMLPParamsBI = MLPParamsBI();
-	ClassifierBI* oClassifierBI = new MLPClassifierBI(&oMLPParamsBI, iInputNumber, 1);
+	ClassifierBI* oClassifierBI = new MLPClassifierBI(&oMLPParamsBI, iInputNumber,hCompleteData.size());
 
 	oClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
 	oClassifierBI->eval();
 
-	float accurancy = oClassifierBI->getClassResults().Accurancy();
-	float efficiency = oClassifierBI->getClassResults().Efficiency();
+//	float accurancy = oClassifierBI->getClassResults().Accurancy();
+//	float efficiency = oClassifierBI->getClassResults().Efficiency();
 
 	
 	delete oClassifierBI;
