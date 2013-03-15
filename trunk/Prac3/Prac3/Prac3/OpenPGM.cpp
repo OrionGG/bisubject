@@ -107,7 +107,8 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 
 						Mat mImage = imread(sImageFile, CV_8UC1);	
 						/*cvtColor(mImage, mImage, CV_RGB2GRAY);*/
-						//mImage.resize(100);
+						Size s(100,100);
+						resize(mImage, mImage, s, 0, 0, INTER_LINEAR);
 						vImages.push_back(mImage);
 
 						fileCount++;
@@ -182,7 +183,7 @@ void LoadImagesData( string sImagesDataDirectory, string filterFileType, int &iI
 }
 
 
-int _main(int argc, char* argv[])
+int main(int argc, char* argv[])
 { // lets just check the version first
 	map<int, Mat> hCompleteData;
 
@@ -192,12 +193,12 @@ int _main(int argc, char* argv[])
 	int iMinDataPerLabel = numeric_limits<int>::max();
 	int iInputNumber;
 	if(!exists( sImagesDataDirectory ) || boost::filesystem::is_empty(sImagesDataDirectory)){
-		//string filterFileType = ".pgm";
-		string filterFileType = ".png";
-		//int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, 
-		//	hCompleteData, iMinDataPerLabel, iInputNumber);
-		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Colors", filterFileType, 
+		string filterFileType = ".pgm";
+		//string filterFileType = ".png";
+		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, 
 			hCompleteData, iMinDataPerLabel, iInputNumber);
+		//int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Colors", filterFileType, 
+		//	hCompleteData, iMinDataPerLabel, iInputNumber);
 	}
 	else{	
 		string filterFileType = ".png";

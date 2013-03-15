@@ -17,21 +17,22 @@ MLPClassifierBI::~MLPClassifierBI(){
 void MLPClassifierBI::setParams(){
 	oMLP = CvANN_MLP();
 	//Mat layers = Mat (2, 1, CV_32SC1 );
-	Mat layers = Mat (4, 1, CV_32SC1 );
+	Mat layers = Mat (5, 1, CV_32SC1 );
 	layers.row (0) = Scalar (iInputNumber);
 	//layers.row (1) = Scalar (iOutputNumber);
-	layers.row (1) = Scalar (1000);
-	layers.row (2) = Scalar (100);
-	layers.row (3) = Scalar (iOutputNumber);
+	layers.row (1) = Scalar (10);
+	layers.row (2) = Scalar (15);
+	layers.row (3) = Scalar (10);
+	layers.row (4) = Scalar (iOutputNumber);
 	oMLP.create (layers,CvANN_MLP::SIGMOID_SYM, 1, 1 );
 
 	CvANN_MLP_TrainParams params;
 	CvTermCriteria criteria;
-	criteria.max_iter = 1000;
+	criteria.max_iter = 1000000;
 	criteria . epsilon = 0.000001f;
 	criteria.type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS;
 	params.train_method = CvANN_MLP_TrainParams::BACKPROP;
-	params.bp_dw_scale = 0.05f;
+	params.bp_dw_scale = 0.001f;
 	params.bp_moment_scale = 0.00025f;
 	params.term_crit = criteria;
 
@@ -99,15 +100,25 @@ void MLPClassifierBI::testBI(){
 
 		Mat mLabel = mTestDataLabels.row(i);
 
+		float fError = 0.0;
 		for (int j = 0; j< mTestDataLabels.cols ; j++)
 		{
 			float fResponse = mResponse.at<float>(0, j);
 			float fLabel = mLabel.at<float>(0, j);
 
+			fError += abs(fResponse - fLabel);
 
-			oClassResults.AccumErr(oClassResults.AccumErr() + abs(fLabel - fResponse));
 		}
 
+		oClassResults.AccumErr(oClassResults.AccumErr() + fError);
+
+		if(fError < 1){
+			oClassResults.TruePositive(oClassResults.TruePositive() + 1);
+		}
+		else{
+
+			oClassResults.FalsePositive(oClassResults.FalsePositive() + 1);
+		}
 	}
 
 }
