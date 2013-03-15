@@ -103,7 +103,7 @@ void mlp (cv::Mat & trainingData , cv::Mat& trainingClasses , cv::Mat & testData
 		plot_binary ( testData , predicted , " Predictions Backpropagation ");
 }
 
-int main () {
+int _main () {
 	int numTrainingPoints =4;
 	int numTestPoints =1;
 	//cv::Mat trainingData ( numTrainingPoints , 2, CV_32FC1 );
