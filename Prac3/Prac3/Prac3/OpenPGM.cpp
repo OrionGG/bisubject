@@ -14,11 +14,17 @@
 #include "IClassParams.h"
 #include "MLPClassifierBI.h"
 #include "MLPParamsBI.h"
+#include "PCAMLPClassifierBI.h"
 
 
 using namespace cv;
 using namespace std;
 using namespace boost::filesystem;
+
+int HEIGHT = 30;
+int WIDTH = 30;
+
+const int iNumComponents = 100;
 
 // Converts the images given in src into a row matrix.
 Mat asRowMatrix(const vector<Mat>& src, int rtype, double alpha = 1, double beta = 0) {
@@ -62,23 +68,7 @@ Mat asRowMatrix(const vector<Mat>& src, int rtype, double alpha = 1, double beta
 
 }
 
-// Normalizes a given image into a value range between 0 and 255.
-Mat norm_0_255(const Mat& src) {
-	// Create and return normalized image:
-	Mat dst;
-	switch(src.channels()) {
-	case 1:
-		cv::normalize(src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
-		break;
-	case 3:
-		cv::normalize(src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
-		break;
-	default:
-		src.copyTo(dst);
-		break;
-	}
-	return dst;
-}
+
 
 
 int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCompleteData, int &iMinDataPerLabel, int &iInputNumber)
@@ -107,9 +97,15 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 
 						Mat mImage = imread(sImageFile, CV_8UC1);	
 						/*cvtColor(mImage, mImage, CV_RGB2GRAY);*/
-						Size s(100,100);
-						resize(mImage, mImage, s, 0, 0, INTER_LINEAR);
-						vImages.push_back(mImage);
+						Mat mImageResize(HEIGHT, WIDTH, CV_8UC1);
+						Size s(mImageResize.rows, mImageResize.cols);
+						//Size mImageSize = mImage.size();
+						//size_t ss = 100;//{100, 100};
+						//mImage.resize(ss);
+
+						resize(mImage, mImageResize, s);
+							//, (float) s.height/mImage.cols, (float) s.width/mImage.rows, 1);
+						vImages.push_back(mImageResize);
 
 						fileCount++;
 					}
@@ -153,32 +149,12 @@ void LoadImagesData( string sImagesDataDirectory, string filterFileType, int &iI
 				iMinDataPerLabel =iDataPerLabel;
 
 			}
+
 			hCompleteData.insert(pair<int,Mat>(iLabel, data));
 			cout << iter->path().filename().string() << endl ; //this is the one of scanned file names
 			iLabel++;
 
-			//Mat mImage = data.row(1);
-			//imshow("mImage",norm_0_255(mImage.reshape(0,192)));
-			//// Number of components to keep for the PCA:
-			//int num_components = 10;
-			//PCA oPCA(data, Mat(), CV_PCA_DATA_AS_ROW, num_components);
-
-			//// And copy the PCA results:
-			//Mat mean = oPCA.mean.clone();
-			//Mat eigenvalues = oPCA.eigenvalues.clone();
-			//Mat eigenvectors = oPCA.eigenvectors.clone();
-			//
-			//// The mean face:
-			//imshow("avg", norm_0_255(mean.reshape(1, 192)));
-
-			//// The first three eigenfaces:
-			//imshow("pc1", norm_0_255(oPCA.eigenvectors.row(0)).reshape(1, 192));
-			//imshow("pc2", norm_0_255(oPCA.eigenvectors.row(1)).reshape(1, 192));
-			//imshow("pc3", norm_0_255(oPCA.eigenvectors.row(2)).reshape(1, 192));
-
-			//// Show the images:
-			//waitKey(0);
-		}
+			}
 	}
 }
 
@@ -187,15 +163,17 @@ int main(int argc, char* argv[])
 { // lets just check the version first
 	map<int, Mat> hCompleteData;
 
+	string sOriginalImagesDataDirectory = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\ExtendedYaleBPNG";
+
 	string sImagesDataDirectory = ".//DataImages//";
 
 
 	int iMinDataPerLabel = numeric_limits<int>::max();
 	int iInputNumber;
 	if(!exists( sImagesDataDirectory ) || boost::filesystem::is_empty(sImagesDataDirectory)){
-		string filterFileType = ".pgm";
-		//string filterFileType = ".png";
-		int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\CroppedYale", filterFileType, 
+		//string filterFileType = ".pgm";
+		string filterFileType = ".png";
+		int iCompleteDataCount = scanFiles(sOriginalImagesDataDirectory, filterFileType, 
 			hCompleteData, iMinDataPerLabel, iInputNumber);
 		//int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Colors", filterFileType, 
 		//	hCompleteData, iMinDataPerLabel, iInputNumber);
@@ -217,8 +195,15 @@ int main(int argc, char* argv[])
 //	float accurancy = oClassifierBI->getClassResults().Accurancy();
 //	float efficiency = oClassifierBI->getClassResults().Efficiency();
 
-	
-	delete oClassifierBI;
+	MLPParamsBI oPCAMLPParamsBI = MLPParamsBI();
+	ClassifierBI* oPCAClassifierBI = new PCAMLPClassifierBI(&oPCAMLPParamsBI, iInputNumber,hCompleteData.size(), iInputNumber /2);
 
+	oPCAClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
+	oPCAClassifierBI->eval();
+
+	
+	//delete oClassifierBI;
+	delete oPCAClassifierBI;
+	waitKey(0);
 	return 0;
 }

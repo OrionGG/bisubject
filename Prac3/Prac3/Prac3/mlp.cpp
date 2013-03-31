@@ -71,58 +71,77 @@ cv::Mat labelData (cv::Mat points , int equation ) {
 	return labels ;
 }
 
+const int cols =  10000;
 void mlp (cv::Mat & trainingData , cv::Mat& trainingClasses , cv::Mat & testData , cv::Mat &
 	testClasses ) {
-		cv::Mat layers = cv::Mat (4, 1, CV_32SC1 );
-		layers . row (0) = cv::Scalar (4) ;
-		layers . row (1) = cv::Scalar (10) ;
-		layers . row (2) = cv::Scalar (15) ;
-		layers . row (3) = cv::Scalar (4) ;
+        cv::Mat layers = cv::Mat (5, 1, CV_32SC1 );
+        layers . row (0) = cv::Scalar (cols) ;
+//        layers . row (1) = cv::Scalar (cols*5) ;
+//        layers . row (2) = cv::Scalar (cols*5*3/2) ;
+        layers . row (1) = cv::Scalar (10) ;
+        layers . row (2) = cv::Scalar (15) ;
+        layers . row (3) = cv::Scalar (10) ;
+        //layers . row (1) = cv::Scalar (cols*5) ;
+        //layers . row (2) = cv::Scalar (4) ;
+        layers . row (4) = cv::Scalar (4) ;
 		CvANN_MLP mlp ;
 		CvANN_MLP_TrainParams params ;
 		CvTermCriteria criteria ;
-		criteria . max_iter = 1000;
-		criteria . epsilon = 0.000001f;
+        criteria . max_iter = 100000;
+        criteria . epsilon = 0.0000000001f;
 		criteria . type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS ;
 		params . train_method = CvANN_MLP_TrainParams :: BACKPROP ;
-		params . bp_dw_scale = 0.05f;
-		params . bp_moment_scale = 0.05f;
+        params . bp_dw_scale = 0.001f;
+        params . bp_moment_scale = 0.00001f;
 		params . term_crit = criteria ;
-		mlp . create ( layers );
-		// train
+        mlp . create ( layers );
 		int iter = mlp . train ( trainingData , trainingClasses , cv::Mat () , cv::Mat () , params );
-		cv::Mat response (1, 4, CV_32FC1 );
-		cv::Mat predicted ( testClasses .rows , 1, CV_32F );
+        cout << iter << endl;
+        cv::Mat response (1, 5, CV_32FC1 );
+        cv::Mat predicted ( testClasses .rows , 5, CV_32F );
 		for ( int i = 0; i < testData . rows ; i ++) {
-			cv::Mat response (1, 4, CV_32FC1 );
+            cv::Mat response (1, 5, CV_32FC1 );
 			cv::Mat sample = testData .row(i);
 			mlp . predict ( sample , response );
-			predicted .at <float >(i ,0) = response .at <float >(0 ,0) ;
+            for(int j =0; j < response.cols; j++){
+                float fresponse = response.at <float >(0 ,j) ;
+                cout << fresponse << endl;
+                predicted .at <float >(i ,0) = response .at <float >(0 ,0) ;
+            }
 		}
-		cout << " Accuracy_ {MLP} = " << evaluate ( predicted , testClasses ) << endl ;
+        cout << " Accuracy_ {MLP} = " << evaluate ( predicted , testClasses ) << endl ;
 		plot_binary ( testData , predicted , " Predictions Backpropagation ");
 }
 
 int _main () {
-	int numTrainingPoints =4;
-	int numTestPoints =1;
+    const int numTrainingPoints =4;
+    const int numTestPoints =1;
+
 	//cv::Mat trainingData ( numTrainingPoints , 2, CV_32FC1 );
 	//cv::Mat testData ( numTestPoints , 2, CV_32FC1 );
 	//cv::randu ( trainingData ,0 ,1);
 	//cv::randu ( testData ,0 ,1);
 	//cv::Mat trainingClasses = labelData ( trainingData , eq);
-	//cv::Mat testClasses = labelData ( testData , eq);
-	float vtrainingData[4][4] = {{0,0,0,0}, {64, 64,64,64}, {200,200,200,200}, {255, 255,255,255}};
-	cv::Mat trainingData = Mat( numTrainingPoints , 4, CV_32FC1,&vtrainingData);
+    //cv::Mat testClasses = labelData ( testData , eq);
+    float vtrainingData[numTrainingPoints][cols];
+    for(int i= 0; i < numTrainingPoints;i++){
+        for(int j= 0; j < cols;j++){
+            vtrainingData[i][j] = (float)(255/3)*i;
+        }
+    }
+    cv::Mat trainingData = Mat( numTrainingPoints , cols, CV_32FC1,&vtrainingData);
 
-	float vtrainingClasses[4][4] = {{1,0,0,0}, {0,1,0,0}, {0,0,1,0},{0,0,0,1}};
-	cv::Mat trainingClasses = Mat( numTrainingPoints , 4, CV_32FC1,&vtrainingClasses);
+    float vtrainingClasses[numTrainingPoints][numTrainingPoints] = {{1,0,0,0}, {0,1,0,0}, {0,0,1,0},{0,0,0,1}};
+    cv::Mat trainingClasses = Mat( numTrainingPoints , numTrainingPoints, CV_32FC1,&vtrainingClasses);
 
-	float vtestData[1][4] ={{200,200,200,200}};
-	cv::Mat testData = Mat( numTestPoints ,4, CV_32FC1,&vtestData);
+    float vtestData[1][cols];
+    for(int j= 0; j < cols;j++){
+        vtestData[0][j] = (float)(255/3)*2;
+    }
+    cv::Mat testData = Mat( numTestPoints ,cols, CV_32FC1,&vtestData);
 
-	float vtestClasses[1][4] = { {0,0,1,0}};
-	cv::Mat testClasses = Mat( numTestPoints , 4, CV_32FC1,&vtestClasses);
+    float vtestClasses[1][numTrainingPoints] = { {0,0,1,0}};
+    cv::Mat testClasses = Mat( numTestPoints , numTrainingPoints, CV_32FC1,&vtestClasses);
 
 	plot_binary ( trainingData , trainingClasses , " Training Data ");
 	plot_binary ( testData , testClasses , " Test Data ");

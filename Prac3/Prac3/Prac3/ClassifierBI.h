@@ -28,7 +28,7 @@ public:
 
 	void eval();
 
-	void CrossEval( int i, int iItemsInSet ) ;
+	virtual void prepareDataToEval( int i, int iItemsInSet )=0 ;
 	
 
 	void SplitTrainLabels(Mat mOriginalData, Mat &mTrainData, Mat &mLabelsData,  int iSplitIndex) ;
@@ -40,11 +40,7 @@ public:
 	ClassResults getClassResults() const;
 	void getClassResults(ClassResults val);
 
-	//cv::Mat CompleteData() const;
-	//void CompleteData(cv::Mat val);
 
-private:
-	//void createDataToEval(int iStartIndex, int iItemsInSet);
 	void createDataToEval(int iStartIndex,int iItemsInSet, Mat vDataOneType, int iLabel, int iLabelsNumber);
 
 protected:

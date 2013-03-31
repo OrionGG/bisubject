@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{523C3D75-59A0-4533-A244-F3450AEA7875}</ProjectGuid>
-    <RootNamespace>Prac3</RootNamespace>
+    <ProjectGuid>{49F4A263-1BA2-4101-A864-DB572ECA1AE3}</ProjectGuid>
+    <RootNamespace>Prac3PrepareImages</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -36,16 +36,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\libraries\boost_1_53_0;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>D:\libraries\boost_1_53_0\stage\lib;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(LibraryPath)</LibraryPath>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>D:\Master Vision Artificial\HSTI\opencv\build\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -68,20 +64,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ClassifierBI.cpp" />
-    <ClCompile Include="mlp.cpp" />
-    <ClCompile Include="MLPClassifierBI.cpp" />
-    <ClCompile Include="OpenPGM.cpp" />
-    <ClCompile Include="MLPParamsBI.cpp" />
-    <ClCompile Include="PCAMLPClassifierBI.cpp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClassifierBI.h" />
-    <ClInclude Include="ClassResults.h" />
-    <ClInclude Include="IClassParams.h" />
-    <ClInclude Include="MLPClassifierBI.h" />
-    <ClInclude Include="MLPParamsBI.h" />
-    <ClInclude Include="PCAMLPClassifierBI.h" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
