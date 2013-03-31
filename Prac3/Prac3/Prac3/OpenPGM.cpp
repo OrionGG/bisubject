@@ -186,11 +186,11 @@ int main(int argc, char* argv[])
 	}
 
 
-	MLPParamsBI oMLPParamsBI = MLPParamsBI();
-	ClassifierBI* oClassifierBI = new MLPClassifierBI(&oMLPParamsBI, iInputNumber,hCompleteData.size());
+	//MLPParamsBI oMLPParamsBI = MLPParamsBI();
+	//ClassifierBI* oClassifierBI = new MLPClassifierBI(&oMLPParamsBI, iInputNumber,hCompleteData.size());
 
-	oClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
-	oClassifierBI->eval();
+	//oClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
+	//oClassifierBI->eval();
 
 //	float accurancy = oClassifierBI->getClassResults().Accurancy();
 //	float efficiency = oClassifierBI->getClassResults().Efficiency();
