@@ -12,9 +12,9 @@ public:
 	int FalsePositive() const { return iFalsePositive; }
 	void FalsePositive(int val) { iFalsePositive = val; }
 
-	double Efficiency() const { return iTruePositive/(iTruePositive+iFalsePositive); }
+	double Efficiency() const { return (double)iTruePositive/(iTruePositive+iFalsePositive); }
 
-	double Accurancy() const { return 1 - (iFalsePositive/(iTruePositive+iFalsePositive)); }
+	double Accurancy() const { return 1 - ((double)iFalsePositive/(iTruePositive+iFalsePositive)); }
 
 	float AccumErr() const { return fAccumErr; }
 	void AccumErr(float val) { fAccumErr = val; }

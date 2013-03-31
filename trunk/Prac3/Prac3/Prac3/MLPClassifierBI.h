@@ -16,7 +16,7 @@ public:
 	MLPClassifierBI(MLPParamsBI* oMLPParamsBIP, int iInputNumberP, int iOutputNumberP);
 	~MLPClassifierBI();
 
-
+	void prepareDataToEval( int i, int iItemsInSet ) ;
 
 	void trainBI();
 	void testBI();
@@ -27,7 +27,7 @@ public:
 	CvANN_MLP MLPObject() const;
 	void MLPObject(CvANN_MLP  val);
 
-private:
+protected:
 	void setParams();
 	CvANN_MLP oMLP;
 	int iInputNumber;
