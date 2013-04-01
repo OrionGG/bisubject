@@ -53,6 +53,7 @@ protected:
 	Mat mTestDataLabels;
 	map<int, Mat> hCompleteData;
 	int iMinDataPerLabel;
+	Mat mConfusiobMatrix;
 
 };
 #endif
