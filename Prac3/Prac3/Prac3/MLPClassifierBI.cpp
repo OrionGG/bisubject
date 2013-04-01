@@ -10,7 +10,7 @@ MLPClassifierBI::MLPClassifierBI(MLPParamsBI* oMLPParamsBIP, int iInputNumberP, 
 	oClassResults.FalsePositive(0);
 
 
-	mConfusiobMatrix = Mat(iOutputNumber, iOutputNumber, CV_32SC1, Scalar::all(0.0));
+	mConfusiobMatrix = Mat(iOutputNumber, iOutputNumber, CV_64FC1, Scalar::all(0.0));
 }
 
 MLPClassifierBI::~MLPClassifierBI(){
@@ -108,16 +108,13 @@ void MLPClassifierBI::testBI(){
 		int maxIdx[3];
 		minMaxIdx(mResonseCopy, 0, &testMaxval, 0, maxIdx);
 		mResonseCopy.at<float>(maxIdx[1]) = testMaxval + 0.1;
-		threshold(mResonseCopy, mResonseCopy, testMaxval, 1, THRESH_BINARY);
+		threshold(mResonseCopy, mResonseCopy, testMaxval, 1.0, THRESH_BINARY);
 
 		Mat mResponse = mResonseCopy.row(0);
 
 		Mat mLabel = mTestDataLabels.row(i);
 
 		float fError = 0.0;
-
-
-		mResonseCopy.at<float>(maxIdx[1]) = testMaxval + 0.1;
 
 		double dLabelMaxval;
 		int aLabelMaxIdx[3];
@@ -131,8 +128,8 @@ void MLPClassifierBI::testBI(){
 
 			fError += abs(fResponse - fLabel);
 
-			int iConfusionValue =(int) (mConfusiobMatrix.at<float>(dLabelMaxIdx, j)+ fResponse);
-			mConfusiobMatrix.at<float>(dLabelMaxIdx, j) = iConfusionValue;
+			double dConfusionValue =(mConfusiobMatrix.at<double>(dLabelMaxIdx, j)+ (int) fResponse);
+			mConfusiobMatrix.at<double>(dLabelMaxIdx, j) = dConfusionValue;
 
 		}
 
