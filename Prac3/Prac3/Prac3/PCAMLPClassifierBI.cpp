@@ -65,61 +65,81 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 	mTrainingDataLabels = Mat(0,0,CV_32FC1);
 	mTestData =  Mat(0,0,CV_32FC1);
 	mTestDataLabels =  Mat(0,0,CV_32FC1);
-	Mat mCompleteData;
+	Mat mCompleteDataSVD;
+
 
 	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
-		mCompleteData.push_back(it->second);
+		
+		Mat vDataOneType = it->second;	
+
+		Mat mDataSVD;
+		vDataOneType.copyTo(mDataSVD);
+		vDataOneType = Mat(0,0,vDataOneType.type());
+
+		for (int iRow=0; iRow < mDataSVD.rows; iRow++)
+		{
+			Mat mImage = mDataSVD.row(iRow);
+			if(mImage.type() != CV_32FC1 ||
+				(mImage.type() != CV_64FC1)){
+					mImage.convertTo(mImage, CV_32FC1);
+			}
+			mImage = mImage.reshape(1, 30);
+			SVD oSVD(mImage,cv::SVD::NO_UV);
+			Mat w = oSVD.w.reshape(1, 1);
+			vDataOneType.push_back(w);
+		}	
+
+		mCompleteDataSVD.push_back(vDataOneType);
+
 	}
 
-	if(mCompleteData.type() != CV_32FC1 ||
-		(mCompleteData.type() != CV_64FC1)){
-			mCompleteData.convertTo(mCompleteData, CV_32FC1);
+	string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\";
+
+	imwrite(sOutputPCAFolder + "\\SVDData.png", mCompleteDataSVD);
+
+	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
+		string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\" + to_string(static_cast<long long>(it->first));
+		Mat vDataOneType;
+		if( !exists( sOutputPCAFolder ) )
+		{
+			// Number of components to keep for the PCA:
+			PCA oPCA(mCompleteDataSVD, Mat(), CV_PCA_DATA_AS_ROW, mCompleteDataSVD.cols);
+
+			Mat vDataOneType = it->second;	
+			Mat mDataPCA;
+			vDataOneType.copyTo(mDataPCA);
+			vDataOneType = Mat(0,0,vDataOneType.type());
+			
+			for (int iRow=0; iRow < mDataPCA.rows; iRow++)
+			{
+				Mat mImage = mDataPCA.row(iRow);
+				if(mImage.type() != CV_32FC1 ||
+					(mImage.type() != CV_64FC1)){
+						mImage.convertTo(mImage, CV_32FC1);
+				}
+				mImage = mImage.reshape(1, 30);
+				SVD oSVD(mImage,cv::SVD::NO_UV);
+				Mat w = oSVD.w.reshape(1, 1);
+
+				Mat mImpageProjected;
+				oPCA.project(w, mImpageProjected);
+				Mat mImpageProjectedNorm = norm_0_255(mImpageProjected);
+				vDataOneType.push_back(mImpageProjectedNorm);
+
+			}
+
+			boost::filesystem::create_directory(sOutputPCAFolder);
+			imwrite(sOutputPCAFolder + "\\PCAData.png", vDataOneType);
+		}
+		else{
+			vDataOneType = imread(sOutputPCAFolder + "\\PCAData.png", CV_BGR2GRAY);
+		}
+	
+
+		ClassifierBI::createDataToEval(i,iItemsInSet, vDataOneType, it->first, hCompleteData.size());
+
+
 	}
-
-	SVD oSVD(mCompleteData);
-
-
-	//ClassifierBI::createDataToEval(i,iItemsInSet, oSVD.w, it->first, hCompleteData.size());
-
-	//for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
-	//	string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\" + to_string(static_cast<long long>(it->first));
-	//	Mat vDataOneType;
-	//	if( !exists( sOutputPCAFolder ) )
-	//	{
-	//		vDataOneType = it->second;
-
-	//		Mat mData;
-	//		vDataOneType.copyTo(mData);
-	//		vDataOneType = Mat(0,0,vDataOneType.type());
-
-	//		// Number of components to keep for the PCA:
-	//		PCA oPCA(mData, Mat(), CV_PCA_DATA_AS_ROW, iNumComponents);
-
-	//		for (int iRow=0; iRow < mData.rows; iRow++)
-	//		{
-	//			Mat mImage = mData.row(iRow);
-
-	//			Mat mImpageProjected;
-	//			oPCA.project(mImage, mImpageProjected);
-	//			Mat mImpageProjectedNorm = norm_0_255(mImpageProjected);
-	//			vDataOneType.push_back(mImpageProjectedNorm);
-
-	//		}
-
-
-	//	
-	//		boost::filesystem::create_directory(sOutputPCAFolder);
-	//		imwrite(sOutputPCAFolder + "\\PCAData.png", vDataOneType);
-	//	}
-	//	else{
-	//		vDataOneType = imread(sOutputPCAFolder + "\\PCAData.png", CV_BGR2GRAY);
-	//	}
-
-
-	//	ClassifierBI::createDataToEval(i,iItemsInSet, vDataOneType, it->first, hCompleteData.size());
-
-
-	//}
 
 
 }
