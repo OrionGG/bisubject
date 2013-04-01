@@ -65,45 +65,23 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 	mTrainingDataLabels = Mat(0,0,CV_32FC1);
 	mTestData =  Mat(0,0,CV_32FC1);
 	mTestDataLabels =  Mat(0,0,CV_32FC1);
-	Mat mCompleteDataSVD;
 
-
-	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
-		
-		Mat vDataOneType = it->second;	
-
-		Mat mDataSVD;
-		vDataOneType.copyTo(mDataSVD);
-		vDataOneType = Mat(0,0,vDataOneType.type());
-
-		for (int iRow=0; iRow < mDataSVD.rows; iRow++)
-		{
-			Mat mImage = mDataSVD.row(iRow);
-			if(mImage.type() != CV_32FC1 ||
-				(mImage.type() != CV_64FC1)){
-					mImage.convertTo(mImage, CV_32FC1);
-			}
-			mImage = mImage.reshape(1, 30);
-			SVD oSVD(mImage,cv::SVD::NO_UV);
-			Mat w = oSVD.w.reshape(1, 1);
-			vDataOneType.push_back(w);
-		}	
-
-		mCompleteDataSVD.push_back(vDataOneType);
-
-	}
-
-	string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\";
-
-	imwrite(sOutputPCAFolder + "\\SVDData.png", mCompleteDataSVD);
-
+	
 	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
 		string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\" + to_string(static_cast<long long>(it->first));
-		Mat vDataOneType;
+
+		Mat vDataOneType = it->second;	
+
+		Mat mDataPCA;
+		vDataOneType.copyTo(mDataPCA);
+		vDataOneType = Mat(0,0,vDataOneType.type());
+
 		if( !exists( sOutputPCAFolder ) )
 		{
 			// Number of components to keep for the PCA:
-			PCA oPCA(mCompleteDataSVD, Mat(), CV_PCA_DATA_AS_ROW, mCompleteDataSVD.cols);
+			PCA oPCA(mDataPCA, Mat(), CV_PCA_DATA_AS_ROW, iNumComponents);
+
+			//PCA oPCA(mDataPCA, Mat(), iNumComponents);
 
 			Mat vDataOneType = it->second;	
 			Mat mDataPCA;
@@ -113,18 +91,19 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 			for (int iRow=0; iRow < mDataPCA.rows; iRow++)
 			{
 				Mat mImage = mDataPCA.row(iRow);
-				if(mImage.type() != CV_32FC1 ||
-					(mImage.type() != CV_64FC1)){
-						mImage.convertTo(mImage, CV_32FC1);
-				}
-				mImage = mImage.reshape(1, 30);
-				SVD oSVD(mImage,cv::SVD::NO_UV);
-				Mat w = oSVD.w.reshape(1, 1);
 
 				Mat mImpageProjected;
-				oPCA.project(w, mImpageProjected);
+				oPCA.project(mImage, mImpageProjected);
 				Mat mImpageProjectedNorm = norm_0_255(mImpageProjected);
 				vDataOneType.push_back(mImpageProjectedNorm);
+
+				mImage = mImage.reshape(1, 30);
+				mImpageProjected = mImpageProjected.reshape(1, 30);
+				mImpageProjectedNorm = mImpageProjectedNorm.reshape(1, 30);
+				imshow("mImage",mImage);
+				imshow("mImpageProjected",mImpageProjected);
+				imshow("mImpageProjectedNorm",mImpageProjectedNorm);
+				waitKey();
 
 			}
 
