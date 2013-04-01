@@ -2,7 +2,7 @@
 
 ClassifierBI::ClassifierBI(IClassParams* oClassParamsP){
 	oClassParams = oClassParamsP;
-	iPercCrossFold = 10;
+	iPercCrossFold = 25;
 }
 
 ClassifierBI::~ClassifierBI(){
@@ -49,6 +49,12 @@ void ClassifierBI::eval(){
 	double dEfficiency = (double)iWellClassifed/(iWellClassifed + iWrongClassifed);
 	std::cout << "Total Efficiency: " << dEfficiency << endl;;
 
+	for(int i = 0; i < mConfusiobMatrix.rows; i++)
+		for(int j = 0; j < mConfusiobMatrix.cols; j++){
+			cout << "[" << i << "," << j << "]" << endl;
+			float fConfusionValue = mConfusiobMatrix.at<float>(i,j);
+			cout << fConfusionValue << endl;
+		}
 
 	
 }

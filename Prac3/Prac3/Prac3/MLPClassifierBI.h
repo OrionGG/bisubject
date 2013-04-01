@@ -33,5 +33,6 @@ protected:
 	int iInputNumber;
 	int iOutputNumber;
 
+
 };
 #endif

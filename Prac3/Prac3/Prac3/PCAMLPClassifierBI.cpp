@@ -27,7 +27,7 @@ void PCAMLPClassifierBI::setParams(){
 
 	CvANN_MLP_TrainParams params;
 	CvTermCriteria criteria;
-	criteria.max_iter = 75;
+	criteria.max_iter = 200;
 	criteria.epsilon = 0.0000001f;
 	//criteria.type = CV_TERMCRIT_ITER ;
 	criteria.type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS ;

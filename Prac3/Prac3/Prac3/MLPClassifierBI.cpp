@@ -8,6 +8,9 @@ MLPClassifierBI::MLPClassifierBI(MLPParamsBI* oMLPParamsBIP, int iInputNumberP, 
 
 	oClassResults.TruePositive(0);
 	oClassResults.FalsePositive(0);
+
+
+	mConfusiobMatrix = Mat(iOutputNumber, iOutputNumber, CV_32SC1, Scalar::all(0.0));
 }
 
 MLPClassifierBI::~MLPClassifierBI(){
@@ -29,7 +32,7 @@ void MLPClassifierBI::setParams(){
 
 	CvANN_MLP_TrainParams params;
 	CvTermCriteria criteria;
-	criteria.max_iter = 5;
+	criteria.max_iter = 200;
 	criteria.epsilon = 0.0000001f;
 	criteria.type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS ;
 	params.train_method = CvANN_MLP_TrainParams :: BACKPROP ;
@@ -91,7 +94,6 @@ void MLPClassifierBI::trainBI(){
 
 void MLPClassifierBI::testBI(){
 
-
 	for ( int i = 0; i < mTestData.rows; i ++) {
 		Mat response (1, mTestDataLabels.cols, CV_32FC1 );
 		Mat sample = mTestData.row(i);
@@ -113,12 +115,24 @@ void MLPClassifierBI::testBI(){
 		Mat mLabel = mTestDataLabels.row(i);
 
 		float fError = 0.0;
+
+
+		mResonseCopy.at<float>(maxIdx[1]) = testMaxval + 0.1;
+
+		double dLabelMaxval;
+		int aLabelMaxIdx[3];
+		minMaxIdx(mLabel, 0, &dLabelMaxval, 0, aLabelMaxIdx);
+		int dLabelMaxIdx = aLabelMaxIdx[1];
+
 		for (int j = 0; j< mTestDataLabels.cols ; j++)
 		{
 			float fResponse = mResponse.at<float>(0, j);
 			float fLabel = mLabel.at<float>(0, j);
 
 			fError += abs(fResponse - fLabel);
+
+			int iConfusionValue =(int) (mConfusiobMatrix.at<float>(dLabelMaxIdx, j)+ fResponse);
+			mConfusiobMatrix.at<float>(dLabelMaxIdx, j) = iConfusionValue;
 
 		}
 
