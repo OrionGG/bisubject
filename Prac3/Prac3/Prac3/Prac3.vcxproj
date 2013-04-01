@@ -69,6 +69,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClassifierBI.cpp" />
+    <ClCompile Include="Eigenfaces.cpp" />
+    <ClCompile Include="helper.cpp" />
     <ClCompile Include="mlp.cpp" />
     <ClCompile Include="MLPClassifierBI.cpp" />
     <ClCompile Include="OpenPGM.cpp" />
@@ -78,6 +80,8 @@
   <ItemGroup>
     <ClInclude Include="ClassifierBI.h" />
     <ClInclude Include="ClassResults.h" />
+    <ClInclude Include="Eigenfaces.h" />
+    <ClInclude Include="helper.h" />
     <ClInclude Include="IClassParams.h" />
     <ClInclude Include="MLPClassifierBI.h" />
     <ClInclude Include="MLPParamsBI.h" />

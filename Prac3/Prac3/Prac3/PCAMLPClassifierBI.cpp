@@ -27,7 +27,7 @@ void PCAMLPClassifierBI::setParams(){
 
 	CvANN_MLP_TrainParams params;
 	CvTermCriteria criteria;
-	criteria.max_iter = 5;
+	criteria.max_iter = 75;
 	criteria.epsilon = 0.0000001f;
 	//criteria.type = CV_TERMCRIT_ITER ;
 	criteria.type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS ;
@@ -66,24 +66,18 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 	mTestData =  Mat(0,0,CV_32FC1);
 	mTestDataLabels =  Mat(0,0,CV_32FC1);
 
-	
+
+	string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\";
+
 	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
 		string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\" + to_string(static_cast<long long>(it->first));
-
-		Mat vDataOneType = it->second;	
-
-		Mat mDataPCA;
-		vDataOneType.copyTo(mDataPCA);
-		vDataOneType = Mat(0,0,vDataOneType.type());
-
+		Mat vDataOneType;
 		if( !exists( sOutputPCAFolder ) )
 		{
 			// Number of components to keep for the PCA:
-			PCA oPCA(mDataPCA, Mat(), CV_PCA_DATA_AS_ROW, iNumComponents);
+			//PCA oPCA(mCompleteDataSVD, Mat(), CV_PCA_DATA_AS_ROW, mCompleteDataSVD.cols);
 
-			//PCA oPCA(mDataPCA, Mat(), iNumComponents);
-
-			Mat vDataOneType = it->second;	
+			vDataOneType = it->second;	
 			Mat mDataPCA;
 			vDataOneType.copyTo(mDataPCA);
 			vDataOneType = Mat(0,0,vDataOneType.type());
@@ -91,19 +85,18 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 			for (int iRow=0; iRow < mDataPCA.rows; iRow++)
 			{
 				Mat mImage = mDataPCA.row(iRow);
+				//if(mImage.type() != CV_32FC1 ||
+				//	(mImage.type() != CV_64FC1)){
+				//		mImage.convertTo(mImage, CV_32FC1);
+				//}
+				//mImage = mImage.reshape(1, 30);
+				//SVD oSVD(mImage,cv::SVD::NO_UV);
+				//Mat w = oSVD.w.reshape(1, 1);
 
 				Mat mImpageProjected;
 				oPCA.project(mImage, mImpageProjected);
 				Mat mImpageProjectedNorm = norm_0_255(mImpageProjected);
 				vDataOneType.push_back(mImpageProjectedNorm);
-
-				mImage = mImage.reshape(1, 30);
-				mImpageProjected = mImpageProjected.reshape(1, 30);
-				mImpageProjectedNorm = mImpageProjectedNorm.reshape(1, 30);
-				imshow("mImage",mImage);
-				imshow("mImpageProjected",mImpageProjected);
-				imshow("mImpageProjectedNorm",mImpageProjectedNorm);
-				waitKey();
 
 			}
 
@@ -121,5 +114,25 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 	}
 
 
+}
+
+void PCAMLPClassifierBI::CompleteData(map<int, Mat> val, int iMinDataPerLabelP) { 
+
+	hCompleteData = val; 
+	iMinDataPerLabel = iMinDataPerLabelP;
+
+	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
+
+		Mat vDataOneType = it->second;	
+
+		mCompleteData.push_back(vDataOneType);
+
+	}
+
+
+	//oPCA(mCompleteDataSVD, Mat(),  mCompleteDataSVD.cols);
+	oPCA(mCompleteData, Mat(), CV_PCA_DATA_AS_ROW, iNumComponents);
+	//oPCA(mCompleteData, Mat(), CV_PCA_DATA_AS_ROW, mCompleteData.cols);
+	
 }
 

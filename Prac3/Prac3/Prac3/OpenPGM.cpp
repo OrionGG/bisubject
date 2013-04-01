@@ -196,9 +196,9 @@ int main(int argc, char* argv[])
 //	float efficiency = oClassifierBI->getClassResults().Efficiency();
 
 	MLPParamsBI oPCAMLPParamsBI = MLPParamsBI();
-	ClassifierBI* oPCAClassifierBI = new PCAMLPClassifierBI(&oPCAMLPParamsBI, iInputNumber,hCompleteData.size(), iInputNumber /2);
+	ClassifierBI* oPCAClassifierBI = new PCAMLPClassifierBI(&oPCAMLPParamsBI, iInputNumber,hCompleteData.size(), iInputNumber *2/3);
 
-	oPCAClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
+	(dynamic_cast<PCAMLPClassifierBI*> (oPCAClassifierBI))->CompleteData(hCompleteData, iMinDataPerLabel);
 	oPCAClassifierBI->eval();
 
 	
