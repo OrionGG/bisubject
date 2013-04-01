@@ -21,11 +21,14 @@ public:
 
 	void prepareDataToEval( int i, int iItemsInSet ) ;
 
+	void CompleteData(map<int, Mat> val, int iMinDataPerLabelP);
 
 	void setParams();
 private:
 	Mat norm_0_255(const Mat& src);
 	int iNumComponents;
+	Mat mCompleteData;
+	PCA oPCA;
 
 };
 #endif

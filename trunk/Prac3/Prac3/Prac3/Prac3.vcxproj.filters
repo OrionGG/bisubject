@@ -25,6 +25,12 @@
     <Filter Include="Source Files\Params">
       <UniqueIdentifier>{f0da97c7-8f43-439f-94fa-4fd0a62e87d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Eigenfaces">
+      <UniqueIdentifier>{e290fcfd-17cc-4ee0-90c7-7b12b3caa192}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Eigenfaces">
+      <UniqueIdentifier>{ac98cee9-4259-44b8-8228-2af97082eadd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OpenPGM.cpp">
@@ -45,6 +51,12 @@
     <ClCompile Include="PCAMLPClassifierBI.cpp">
       <Filter>Source Files\Classifiers</Filter>
     </ClCompile>
+    <ClCompile Include="Eigenfaces.cpp">
+      <Filter>Source Files\Eigenfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="helper.cpp">
+      <Filter>Source Files\Eigenfaces</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassifierBI.h">
@@ -64,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="PCAMLPClassifierBI.h">
       <Filter>Header Files\Classifiers</Filter>
+    </ClInclude>
+    <ClInclude Include="Eigenfaces.h">
+      <Filter>Header Files\Eigenfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="helper.h">
+      <Filter>Header Files\Eigenfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
