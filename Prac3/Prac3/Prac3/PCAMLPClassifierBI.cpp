@@ -27,10 +27,10 @@ void PCAMLPClassifierBI::setParams(){
 
 	CvANN_MLP_TrainParams params;
 	CvTermCriteria criteria;
-	criteria.max_iter = 200;
+	criteria.max_iter = 1000;
 	criteria.epsilon = 0.0000001f;
 	//criteria.type = CV_TERMCRIT_ITER ;
-	criteria.type = CV_TERMCRIT_ITER | CV_TERMCRIT_EPS ;
+	criteria.type = CV_TERMCRIT_ITER ;
 	params.train_method = CvANN_MLP_TrainParams :: BACKPROP ;
 	params.bp_dw_scale = 0.1f;
 	params.bp_moment_scale = 0.1f;
