@@ -15,6 +15,8 @@
 #include "MLPClassifierBI.h"
 #include "MLPParamsBI.h"
 #include "PCAMLPClassifierBI.h"
+#include "EigenfacesParamsBI.h"
+#include "EigenfacesClassifierBI.h"
 
 
 using namespace cv;
@@ -196,14 +198,21 @@ int main(int argc, char* argv[])
 //	float efficiency = oClassifierBI->getClassResults().Efficiency();
 
 	MLPParamsBI oPCAMLPParamsBI = MLPParamsBI();
-	ClassifierBI* oPCAClassifierBI = new PCAMLPClassifierBI(&oPCAMLPParamsBI, iInputNumber,hCompleteData.size(), iInputNumber *2/3);
+	ClassifierBI* oPCAClassifierBI = new PCAMLPClassifierBI(&oPCAMLPParamsBI, iInputNumber,hCompleteData.size(), 80);
 
 	(dynamic_cast<PCAMLPClassifierBI*> (oPCAClassifierBI))->CompleteData(hCompleteData, iMinDataPerLabel);
 	oPCAClassifierBI->eval();
 
+	//EigenfacesParamsBI oEigenfacesParamsBI = EigenfacesParamsBI();
+	//ClassifierBI* oEigenfacesClassifierBI = new EigenfacesClassifierBI(&oEigenfacesParamsBI, hCompleteData.size());
+
+	//oEigenfacesClassifierBI->CompleteData(hCompleteData, iMinDataPerLabel);
+	//oEigenfacesClassifierBI->eval();
+
 	
 	//delete oClassifierBI;
 	delete oPCAClassifierBI;
+	//delete oEigenfacesClassifierBI;
 	waitKey(0);
 	return 0;
 }

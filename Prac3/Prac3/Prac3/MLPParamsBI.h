@@ -1,6 +1,6 @@
 #pragma once
-#ifndef SVMParamsBI_H
-#define SVMParamsBI_H
+#ifndef MLPParamsBI_H
+#define MLPParamsBI_H
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"

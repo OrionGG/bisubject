@@ -51,7 +51,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Master Vision Artificial\HSTI\opencv\build\x86\vc10\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;opencv_imgproc242.lib;opencv_core242d.lib;opencv_highgui242d.lib;opencv_ml242.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;opencv_imgproc242.lib;opencv_core242d.lib;opencv_highgui242d.lib;opencv_ml242.lib;opencv_contrib242d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,7 +69,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClassifierBI.cpp" />
+    <ClCompile Include="EgienfacesClassifierBI.cpp" />
     <ClCompile Include="Eigenfaces.cpp" />
+    <ClCompile Include="EigenfacesParamsBI.cpp" />
     <ClCompile Include="helper.cpp" />
     <ClCompile Include="mlp.cpp" />
     <ClCompile Include="MLPClassifierBI.cpp" />
@@ -81,6 +83,8 @@
     <ClInclude Include="ClassifierBI.h" />
     <ClInclude Include="ClassResults.h" />
     <ClInclude Include="Eigenfaces.h" />
+    <ClInclude Include="EigenfacesClassifierBI.h" />
+    <ClInclude Include="EigenfacesParamsBI.h" />
     <ClInclude Include="helper.h" />
     <ClInclude Include="IClassParams.h" />
     <ClInclude Include="MLPClassifierBI.h" />

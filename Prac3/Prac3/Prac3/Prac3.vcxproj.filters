@@ -57,6 +57,12 @@
     <ClCompile Include="helper.cpp">
       <Filter>Source Files\Eigenfaces</Filter>
     </ClCompile>
+    <ClCompile Include="EgienfacesClassifierBI.cpp">
+      <Filter>Source Files\Classifiers</Filter>
+    </ClCompile>
+    <ClCompile Include="EigenfacesParamsBI.cpp">
+      <Filter>Source Files\Params</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassifierBI.h">
@@ -82,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="helper.h">
       <Filter>Header Files\Eigenfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="EigenfacesClassifierBI.h">
+      <Filter>Header Files\Classifiers</Filter>
+    </ClInclude>
+    <ClInclude Include="EigenfacesParamsBI.h">
+      <Filter>Header Files\Params</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
