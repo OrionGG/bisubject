@@ -52,8 +52,8 @@ void ClassifierBI::eval(){
 	for(int i = 0; i < mConfusiobMatrix.rows; i++)
 		for(int j = 0; j < mConfusiobMatrix.cols; j++){
 			cout << "[" << i << "," << j << "]" << endl;
-			float fConfusionValue = mConfusiobMatrix.at<float>(i,j);
-			cout << fConfusionValue << endl;
+			double dConfusionValue = mConfusiobMatrix.at<double>(i,j);
+			cout << dConfusionValue << endl;
 		}
 
 	
