@@ -130,6 +130,9 @@ int scanFiles( const path & directory, string filterFileType, map<int, Mat> &hCo
 			iLabel++;
 		} 
 	}
+	else{
+		cout << "ERROR: Folder " << directory.string() << " does not exist." << endl;
+	}
 	return fileCount;
 }
 
@@ -165,7 +168,7 @@ int main(int argc, char* argv[])
 { // lets just check the version first
 	map<int, Mat> hCompleteData;
 
-	string sOriginalImagesDataDirectory = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\ExtendedYaleBPNG";
+	string sOriginalImagesDataDirectory = ".//ExtendedYaleBPNG//";
 
 	string sImagesDataDirectory = ".//DataImages//";
 
@@ -179,6 +182,10 @@ int main(int argc, char* argv[])
 			hCompleteData, iMinDataPerLabel, iInputNumber);
 		//int iCompleteDataCount = scanFiles("D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Colors", filterFileType, 
 		//	hCompleteData, iMinDataPerLabel, iInputNumber);
+		if(iCompleteDataCount == 0){
+			Sleep(10000);
+			return 0;
+		}
 	}
 	else{	
 		string filterFileType = ".png";
@@ -213,6 +220,7 @@ int main(int argc, char* argv[])
 	//delete oClassifierBI;
 	delete oPCAClassifierBI;
 	//delete oEigenfacesClassifierBI;
-	waitKey(0);
+
+	Sleep(10000);
 	return 0;
 }
