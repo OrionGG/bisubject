@@ -1,4 +1,4 @@
-Prac3PrepareImages es un proyecto en Visual Studio para pasar las imágenes de ExtendedYaleB de formato .pgm a formato .png
+Prac3PrepareImages es un proyecto en Visual Studio para pasar las imágenes de ExtendedYaleB de formato .pgm a formato .png en una carpeta llamada ExtendedYaleBPNG
 	Utiliza las librerias de OpenCV y de boost/filesystem
 
 Prac3 es el proyeco en Visual Studio que implementa la pracica. Contiene la implementación del PCA y las redes neuronales.
