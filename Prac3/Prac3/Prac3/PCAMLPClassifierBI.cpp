@@ -67,13 +67,16 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 	mTestDataLabels =  Mat(0,0,CV_32FC1);
 
 
-	string sOutputPCAFolder = ".\\PCAs\\";
+	string sOutputPCAParentFolder = ".\\PCAs\\";
 
 	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
 		string sOutputPCAFolder = ".\\PCAs\\" + to_string(static_cast<long long>(it->first));
 		Mat vDataOneType;
 		if( !exists( sOutputPCAFolder ) )
 		{
+
+			boost::filesystem::path getcwd =  boost::filesystem::current_path();
+			boost::filesystem::create_directory(getcwd / sOutputPCAParentFolder);
 			// Number of components to keep for the PCA:
 			//PCA oPCA(mCompleteDataSVD, Mat(), CV_PCA_DATA_AS_ROW, mCompleteDataSVD.cols);
 
@@ -99,8 +102,8 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 				vDataOneType.push_back(mImpageProjectedNorm);
 
 			}
-
-			boost::filesystem::create_directory(sOutputPCAFolder);
+			
+			boost::filesystem::create_directory(getcwd / sOutputPCAFolder);
 			imwrite(sOutputPCAFolder + "\\PCAData.png", vDataOneType);
 		}
 		else{
