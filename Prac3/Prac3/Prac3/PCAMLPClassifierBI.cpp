@@ -67,10 +67,10 @@ void PCAMLPClassifierBI::prepareDataToEval( int i, int iItemsInSet ){
 	mTestDataLabels =  Mat(0,0,CV_32FC1);
 
 
-	string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\";
+	string sOutputPCAFolder = ".\\PCAs\\";
 
 	for (map<int, Mat>::iterator it=hCompleteData.begin(); it!=hCompleteData.end(); ++it){
-		string sOutputPCAFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\Prac3\\Prac3\\PCAs\\" + to_string(static_cast<long long>(it->first));
+		string sOutputPCAFolder = ".\\PCAs\\" + to_string(static_cast<long long>(it->first));
 		Mat vDataOneType;
 		if( !exists( sOutputPCAFolder ) )
 		{
