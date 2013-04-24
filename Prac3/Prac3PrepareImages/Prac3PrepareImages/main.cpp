@@ -76,6 +76,9 @@ int convertToPNG( const path & directory, string filterFileType, string sOutputF
 			iLabel++;
 		} 
 	}
+	else{
+		cout << "ERROR: Folder " << directory.string() << " does not exist." << endl;
+	}
 	return fileCount;
 }
 
@@ -83,15 +86,15 @@ int convertToPNG( const path & directory, string filterFileType, string sOutputF
 
 int main(int argc, char* argv[])
 { // lets just check the version first
-	string sImagesDataDirectory = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\ExtendedYaleB";
+	string sImagesDataDirectory = ".\\ExtendedYaleB";
 
-	string sOutputFolder = "D:\\Master Vision Artificial\\BI\\Practices\\src\\Prac3\\ExtendedYaleBPNG\\";
+	string sOutputFolder = ".\\ExtendedYaleBPNG\\";
 	
 	string filterFileType = ".pgm";
 
 	int iCompleteDataCount = convertToPNG(sImagesDataDirectory, filterFileType, sOutputFolder);
 
 	
-
+	Sleep(10000);
 	return 0;
 }
